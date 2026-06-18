@@ -5,12 +5,12 @@ variable "project-id" {
 
 variable "region" {
   type = string
-  default = "us-central1"
+  default = "europe-central2"
 }
 
 variable "zone" {
   type = string
-  default = "us-central1-a"
+  default = "europe-central2-a"
 }
 
 variable "subnet-name" {
@@ -30,12 +30,12 @@ variable "private_google_access" {
 
 variable "firewall-ports" {
   type = list
-  default = ["80", "8080", "1000-2000", "22"]
+  default = ["80", "443", "6443", "2379-2380", "10250", "22"]
 }
 
 variable "compute-source-tags" {
     type = list
-    default = ["web"]
+    default = ["worker"]
 }
 
 variable "target_environment" {
@@ -60,8 +60,8 @@ variable "environment_map" {
 variable "environment_machine_type" {
   type = map(string)
   default = {
-    "DEV" = "f1-micro",
-    "QA" = "e2-micro",
+    "DEV" = "e2-small",
+    "QA" = "f1-micro",
     "STAGE" = "e2-micro",
     "PROD" = "e2-medium"
   }
@@ -71,13 +71,13 @@ variable "environment_instance_settings" {
   type = map(object({machine_type=string, labels=map(string)}))
   default = {
     "DEV" = {
-      machine_type = "f1-micro"
+      machine_type = "e2-small"
       labels = {
         environment = "dev"
       }
     },
    "QA" = {
-      machine_type = "e2-micro"
+      machine_type = "f1-micro"
       labels = {
         environment = "qa"
       }

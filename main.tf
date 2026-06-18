@@ -20,7 +20,7 @@ resource "google_compute_subnetwork" "subnet-1" {
 }
 
 resource "google_compute_firewall" "default" {
-  name    = "test-firewall"
+  name    = "test-fw"
   network = data.google_compute_network.default.self_link
 
   allow {
@@ -35,20 +35,10 @@ resource "google_compute_firewall" "default" {
   source_tags = var.compute-source-tags
 }
 
-## BUCKETS
-resource "google_storage_bucket" "environment_buckets" {
-  for_each = toset(var.environment_list)
-  name = "${lower(each.key)}_${var.project-id}"
-  location = "US"
-  versioning {
-    enabled = true
-  }
-}
-
 ### COMPUTE
-## NGINX PROXY
-resource "google_compute_instance" "nginx_instance" {
-  name         = "nginx-proxy"
+## control node
+resource "google_compute_instance" "control" {
+  name         = "control"
   machine_type = var.environment_machine_type[var.target_environment]
   labels = {
     environment = var.environment_map[var.target_environment]
@@ -57,7 +47,7 @@ resource "google_compute_instance" "nginx_instance" {
   
   boot_disk {
     initialize_params {
-      image = "debian-cloud/debian-11"
+      image = "projects/ubuntu-os-cloud/global/images/ubuntu-minimal-2604-resolute-amd64-v20260529"
     }
   }
 
@@ -70,17 +60,17 @@ resource "google_compute_instance" "nginx_instance" {
   }
 }
 
-# WEBSERVERS
-resource "google_compute_instance" "web-instances" {
+# worker nodes
+resource "google_compute_instance" "worker" {
   count = 3
-  name         = "web${count.index}"
+  name         = "work${count.index}"
   machine_type = var.environment_machine_type[var.target_environment]
   labels = {
     environment = var.environment_map[var.target_environment]
   }
      boot_disk {
     initialize_params {
-      image = "debian-cloud/debian-11"
+      image = "projects/ubuntu-os-cloud/global/images/ubuntu-minimal-2604-resolute-amd64-v20260529"
     }
   }
 
@@ -89,24 +79,4 @@ resource "google_compute_instance" "web-instances" {
     network = data.google_compute_network.default.self_link
     subnetwork = google_compute_subnetwork.subnet-1.self_link
   }
-}
-
-## DB
-resource "google_compute_instance" "mysqldb" {
-  name         = "mysqldb"
-  machine_type = var.environment_machine_type[var.target_environment]
-  labels = {
-    environment = var.environment_map[var.target_environment]
-  }
-  
-  boot_disk {
-    initialize_params {
-      image = "debian-cloud/debian-11"
-    }
-  }
-
-  network_interface {
-    network = data.google_compute_network.default.self_link
-    subnetwork = google_compute_subnetwork.subnet-1.self_link
-  }  
 }

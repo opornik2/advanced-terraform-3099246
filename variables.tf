@@ -75,6 +75,12 @@ variable "environment_instance_settings" {
       labels = {
         environment = "dev"
       }
+      metadata = {
+        "ssh-keys" = <<EOT
+            jbloch:ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDRCApR7nuFfSjxhfScxfrep3e1VTl7LjN9deMeoBY7a jbloch@herezja
+            jbloch:ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDRH7qnvVUKiuL0GebRfGfkOQNobg2/iiCdfQ3X4lSPC eddsa-key-20240328@LenovoT570
+        EOT
+      }
     },
    "QA" = {
       machine_type = "f1-micro"

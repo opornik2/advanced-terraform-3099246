@@ -20,7 +20,7 @@ variable "subnet-name" {
 
 variable "subnet-cidr" {
   type = string
-  default = "10.127.0.0/20"
+  default = "10.186.0.0/20"
 }
 
 variable "private_google_access" {
@@ -30,7 +30,8 @@ variable "private_google_access" {
 
 variable "firewall-ports" {
   type = list
-  default = ["80", "443", "6443", "2379-2380", "10250", "22"]
+  #default = ["80", "443", "6443", "2379-2380", "10250", "22"]
+  default = ["80", "443"]
 }
 
 variable "compute-source-tags" {

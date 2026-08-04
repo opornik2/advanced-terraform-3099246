@@ -28,6 +28,10 @@ resource "google_compute_firewall" "default" {
   }
 
   allow {
+    protocol = "ipip"
+  }
+
+allow {
     protocol = "tcp"
     ports    = var.firewall-ports
   }
